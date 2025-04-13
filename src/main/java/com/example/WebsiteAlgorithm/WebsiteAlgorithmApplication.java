@@ -7,8 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class WebsiteAlgorithmApplication {
 
 	public static void main(String[] args) {
-
 		SpringApplication.run(WebsiteAlgorithmApplication.class, args);
 	}
-
 }

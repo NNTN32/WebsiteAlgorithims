@@ -2,21 +2,25 @@ package com.example.WebsiteAlgorithm.model;
 
 import jakarta.persistence.*;
 
-import javax.management.relation.Role;
+import com.example.WebsiteAlgorithm.model.Role;
+import lombok.Data;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Table(name = "user")
+@Data
 public class User {
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String username;
     private String email;
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private Role role; // USER, ADMIN
+    private Role role;
 
     private LocalDateTime createdAt;
 }

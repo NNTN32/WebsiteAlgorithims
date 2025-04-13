@@ -1,22 +1,28 @@
 package com.example.WebsiteAlgorithm.model;
 
 import jakarta.persistence.*;
-import org.springframework.beans.factory.parsing.Problem;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "submission")
+@Data
 public class Submission {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne private User user;
-    @ManyToOne private Problem problem;
+    @ManyToOne
+    private User user;
+
+    @ManyToOne
+    private Problem problem; // bây giờ đã dùng đúng entity
 
     private String language;
-    @Lob private String code;
+
+    @Lob
+    private String code;
 
     private boolean isAccepted;
     private int runtime;

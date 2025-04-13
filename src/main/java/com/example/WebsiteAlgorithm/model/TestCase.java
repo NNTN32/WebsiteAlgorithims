@@ -1,12 +1,14 @@
 package com.example.WebsiteAlgorithm.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
 @Table(name = "testcase")
+@Data
 public class TestCase {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne

@@ -2,14 +2,17 @@ package com.example.WebsiteAlgorithm.model;
 
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Table(name = "problem")
+@Data
 public class Problem {
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String title;
