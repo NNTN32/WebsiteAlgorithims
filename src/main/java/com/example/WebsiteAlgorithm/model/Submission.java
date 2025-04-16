@@ -14,10 +14,12 @@ public class Submission {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne
-    private Problem problem; // bây giờ đã dùng đúng entity
+    @JoinColumn(name = "problem_id")
+    private Problem problem;
 
     private String language;
 

@@ -12,6 +12,7 @@ public class TestCase {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "problem_id")
     private Problem problem;
 
     @Lob

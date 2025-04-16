@@ -6,7 +6,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "leaderBoard")
+@Table(name = "leaderboard")
 @Data
 public class LeaderBoard {
     @Id

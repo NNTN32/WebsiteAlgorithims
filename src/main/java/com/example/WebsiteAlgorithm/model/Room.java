@@ -16,6 +16,7 @@ public class Room {
     private String name;
 
     @ManyToOne
+    @JoinColumn(name = "host_id")
     private User host;
 
     private LocalDateTime createdAt;
