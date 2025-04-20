@@ -114,6 +114,15 @@
 			<version>0.12.5</version>
 			<scope>runtime</scope> <!-- PHẢI CÓ -->
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.lettuce</groupId>
+			<artifactId>lettuce-core</artifactId>
+			<version>6.4.1.RELEASE</version>
+		</dependency>
 	</dependencies>
 
 	<build>
