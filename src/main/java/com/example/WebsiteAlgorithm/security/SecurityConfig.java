@@ -31,9 +31,15 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtTokenProvider jwtTokenProvider) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                .cors(cors -> {}) // nếu bạn có @Bean corsConfigurer
+                .cors(cors -> {})
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
+                        .requestMatchers(
+                                "/api/auth/login",
+                                "/api/auth/register",
+                                "/api/auth/login/result/{sessionId}",
+                                "/ws/**",               //Cho phép WebSocket connect
+                                "/topic/**", "/queue/**", "/app/**"  // Nếu cần, cho các topic
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);

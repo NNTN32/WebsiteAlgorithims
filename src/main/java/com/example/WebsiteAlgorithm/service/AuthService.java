@@ -8,22 +8,26 @@ import com.example.WebsiteAlgorithm.model.Status;
 import com.example.WebsiteAlgorithm.model.User;
 import com.example.WebsiteAlgorithm.repository.UserRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
-    private final UserRepo userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtTokenProvider tokenProvider;
+    @Autowired
+    private UserRepo userRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private JwtTokenProvider tokenProvider;
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
 
-    public AuthService(UserRepo userRepository, PasswordEncoder passwordEncoder, JwtTokenProvider tokenProvider) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.tokenProvider = tokenProvider;
-    }
+    private static final String STREAM_KEY = "auth:login:stream";
 
     public String register(AuthRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {

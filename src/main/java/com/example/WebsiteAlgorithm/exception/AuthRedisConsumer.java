@@ -13,12 +13,15 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 
 @Component
 @RequiredArgsConstructor
 public class AuthRedisConsumer {
+
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
@@ -54,12 +57,44 @@ public class AuthRedisConsumer {
                         try {
                             AuthRequest req = new AuthRequest(username, password, sessionId);
                             AuthResponse response = authService.login(req);
+
+                            // Gửi về frontend (websocket)
                             messagingTemplate.convertAndSendToUser(sessionId, "/queue/login-result", response);
+
+                            // Lưu kết quả vào Redis Hash
+                            String resultKey = "login:result:" + sessionId;
+                            Map<String, String> resultMap = new HashMap<>();
+                            resultMap.put("status", response.getStatus().toString());
+                            resultMap.put("username", response.getUsername());
+                            resultMap.put("token", response.getToken());
+                            resultMap.put("id", String.valueOf(response.getId()));
+                            resultMap.put("role", String.valueOf(response.getRole()));
+                            resultMap.put("message", response.getMessage());
+
+                            redisTemplate.opsForHash().putAll(resultKey, resultMap);
+                            redisTemplate.expire(resultKey, Duration.ofMinutes(5));
+
                         } catch (Exception e) {
-                            messagingTemplate.convertAndSendToUser(sessionId, "/queue/login-result",
-                                    new AuthResponse(null, null, username, null, Status.FAIL, e.getMessage()));
+                            AuthResponse errorResponse = new AuthResponse(
+                                    null, null, username, null, Status.FAIL, e.getMessage());
+
+                            messagingTemplate.convertAndSendToUser(sessionId, "/queue/login-result", errorResponse);
+
+                            // Lưu kết quả thất bại vào Redis Hash
+                            String resultKey = "login:result:" + sessionId;
+                            Map<String, String> resultMap = new HashMap<>();
+                            resultMap.put("status", Status.FAIL.toString());
+                            resultMap.put("username", username);
+                            resultMap.put("token", "");
+                            resultMap.put("id", "");
+                            resultMap.put("role", "");
+                            resultMap.put("message", e.getMessage());
+
+                            redisTemplate.opsForHash().putAll(resultKey, resultMap);
+                            redisTemplate.expire(resultKey, Duration.ofMinutes(5));
                         }
 
+                        // Acknowledge sau xử lý
                         redisTemplate.opsForStream().acknowledge(STREAM_KEY, GROUP, record.getId());
                     }
                 }

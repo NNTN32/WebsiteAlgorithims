@@ -3,6 +3,7 @@ package com.example.WebsiteAlgorithm.service;
 import com.example.WebsiteAlgorithm.dto.Auth.AuthRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.connection.stream.StreamRecords;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,12 @@ public class AuthRedisProducer {
         data.put("password", request.getPassword());
         data.put("sessionId", request.getSession());
 
-        redisTemplate.opsForStream().add(STREAM_KEY, data);
+        //Log
+        System.out.println("Sending to Redis Stream: " + data);
+        redisTemplate.opsForStream()
+                .add(StreamRecords.newRecord()
+                        .in("auth:login:stream")
+                        .ofMap(data));
     }
 }
 
