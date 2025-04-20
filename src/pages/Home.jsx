@@ -99,7 +99,7 @@ const Home = () => {
               Join thousands of developers who have improved their problem-solving skills with us.
             </p>
             <Link
-              to="/signup"
+              to="/register"
               className="px-8 py-3 bg-white text-blue-600 rounded-lg hover:bg-gray-100 transition-colors text-lg font-semibold"
             >
               Get Started Now
