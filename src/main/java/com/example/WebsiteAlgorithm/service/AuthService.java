@@ -4,6 +4,7 @@ import com.example.WebsiteAlgorithm.config.JwtTokenProvider;
 import com.example.WebsiteAlgorithm.dto.Auth.AuthRequest;
 import com.example.WebsiteAlgorithm.dto.Auth.AuthResponse;
 import com.example.WebsiteAlgorithm.model.Role;
+import com.example.WebsiteAlgorithm.model.Status;
 import com.example.WebsiteAlgorithm.model.User;
 import com.example.WebsiteAlgorithm.repository.UserRepo;
 import lombok.RequiredArgsConstructor;
@@ -49,6 +50,14 @@ public class AuthService {
         }
 
         String token = tokenProvider.generateToken(user);
-        return new AuthResponse(token, user.getId(), user.getUsername(), user.getRole());
+
+        return new AuthResponse(
+                token,
+                user.getId(),
+                user.getUsername(),
+                user.getRole(),
+                Status.SUCCESS,         // Đây là status phản hồi, không phải status trong User entity
+                "Login successful"
+        );
     }
 }

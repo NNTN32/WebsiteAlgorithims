@@ -22,6 +22,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
     private LocalDateTime createdAt;
 
     public Long getId() {
@@ -42,6 +45,10 @@ public class User {
 
     public Role getRole() {
         return role;
+    }
+
+    public Status getStatus(){
+        return status;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -69,6 +76,9 @@ public class User {
         this.role = role;
     }
 
+    public void setStatus(Status status){
+        this.status= status;
+    }
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }

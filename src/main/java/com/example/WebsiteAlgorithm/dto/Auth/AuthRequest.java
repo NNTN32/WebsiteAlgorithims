@@ -9,6 +9,13 @@ public class AuthRequest {
     private String password;
     private Role role;
     private String email;
+    private String sessionID;
+
+    public AuthRequest(String username, String password, String sessionID) {
+        this.username = username;
+        this.password = password;
+        this.sessionID = sessionID;
+    }
 
     public String getUsername() {
         return username;
@@ -40,5 +47,13 @@ public class AuthRequest {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getSession(){
+        return sessionID;
+    }
+
+    public void setSession(String sessionID){
+        this.sessionID = sessionID;
     }
 }
