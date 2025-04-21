@@ -40,7 +40,6 @@ public class SecurityConfig {
                                 "/ws/**",               //Cho phép WebSocket connect
                                 "/topic/**", "/queue/**", "/app/**"  // Nếu cần, cho các topic
                         ).permitAll()
-                        .requestMatchers("http://localhost:5181").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
