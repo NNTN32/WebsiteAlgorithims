@@ -19,6 +19,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/auth")
+@CrossOrigin(origins = "http://localhost:5181")
 public class AuthControl {
     private final AuthService authService;
 
