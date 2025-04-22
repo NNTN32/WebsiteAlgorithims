@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -47,12 +48,17 @@ public class AuthControl {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
         try {
-            // Nếu muốn gán session thủ công, có thể tự tạo ID random
-            String sessionId = UUID.randomUUID().toString(); // hoặc để null nếu chưa cần
+            String sessionId = UUID.randomUUID().toString();
             request.setSession(sessionId);
-
             redisAuthProducer.sendLoginRequest(request);
-            return ResponseEntity.ok("Login request queued");
+
+            // Trả về sessionId trong response
+            Map<String, Object> response = new HashMap<>();
+            response.put("sessionId", sessionId);
+            response.put("message", "Login request queued");
+            response.put("status", "PENDING");
+
+            return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
