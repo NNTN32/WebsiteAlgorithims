@@ -42,46 +42,92 @@ const Train = () => {
     rank: 'Gold',
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: { 
+      y: 0, 
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 100
+      }
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 pt-20">
       <div className="container mx-auto px-4 py-8">
         <div className="flex gap-8">
           {/* Sidebar */}
           <motion.div
             initial={{ x: -100, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            className="w-80 bg-white rounded-xl shadow-lg p-6 h-fit sticky top-8"
+            transition={{ 
+              type: "spring",
+              stiffness: 100,
+              damping: 15
+            }}
+            className="w-80 bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl p-6 h-fit sticky top-24 border border-white/20"
           >
             <div className="text-center mb-6">
-              <div className="w-20 h-20 bg-blue-100 rounded-full mx-auto mb-4 flex items-center justify-center">
-                <span className="text-3xl">👤</span>
-              </div>
-              <h3 className="text-xl font-semibold">User Name</h3>
+              <motion.div 
+                className="w-24 h-24 bg-gradient-to-br from-blue-400 to-purple-400 rounded-full mx-auto mb-4 flex items-center justify-center shadow-lg"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <span className="text-4xl">👤</span>
+              </motion.div>
+              <h3 className="text-xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">User Name</h3>
               <p className="text-gray-500">Rank: {userStats.rank}</p>
             </div>
 
-            <div className="space-y-4 mb-6">
-              <div className="bg-gray-50 p-4 rounded-lg">
+            <motion.div 
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              className="space-y-4 mb-6"
+            >
+              <motion.div 
+                variants={itemVariants}
+                className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-xl shadow-sm border border-white/50"
+              >
                 <p className="text-gray-600">Total Problems</p>
-                <p className="text-2xl font-bold">{userStats.totalProblems}</p>
-              </div>
-              <div className="bg-gray-50 p-4 rounded-lg">
+                <p className="text-2xl font-bold text-blue-600">{userStats.totalProblems}</p>
+              </motion.div>
+              <motion.div 
+                variants={itemVariants}
+                className="bg-gradient-to-r from-indigo-50 to-purple-50 p-4 rounded-xl shadow-sm border border-white/50"
+              >
                 <p className="text-gray-600">Solved Problems</p>
-                <p className="text-2xl font-bold">{userStats.solvedProblems}</p>
-              </div>
-              <div className="bg-gray-50 p-4 rounded-lg">
+                <p className="text-2xl font-bold text-indigo-600">{userStats.solvedProblems}</p>
+              </motion.div>
+              <motion.div 
+                variants={itemVariants}
+                className="bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-xl shadow-sm border border-white/50"
+              >
                 <p className="text-gray-600">Accuracy</p>
-                <p className="text-2xl font-bold">{userStats.accuracy}%</p>
-              </div>
-            </div>
+                <p className="text-2xl font-bold text-purple-600">{userStats.accuracy}%</p>
+              </motion.div>
+            </motion.div>
 
-            <button
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               onClick={() => setShowProfileModal(true)}
-              className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors"
+              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl hover:shadow-lg transition-all duration-300 font-medium"
             >
               View Profile
-            </button>
+            </motion.button>
           </motion.div>
 
           {/* Main Content */}
@@ -91,21 +137,21 @@ const Train = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="flex-1"
           >
-            <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
-              <h1 className="text-3xl font-bold mb-6">Training Center</h1>
+            <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl p-8 border border-white/20">
+              <h1 className="text-4xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">Training Center</h1>
               
               {/* Category Tabs */}
-              <div className="flex gap-4 mb-8">
+              <div className="flex gap-4 mb-8 flex-wrap">
                 {categories.map((category) => (
                   <motion.button
                     key={category.id}
-                    whileHover={{ scale: 1.05 }}
+                    whileHover={{ scale: 1.05, y: -2 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setSelectedCategory(category.id)}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                    className={`flex items-center gap-2 px-6 py-3 rounded-xl transition-all duration-300 ${
                       selectedCategory === category.id
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
+                        : 'bg-white/50 text-gray-700 hover:bg-white hover:shadow-md'
                     }`}
                   >
                     <span className="text-xl">{category.icon}</span>
@@ -115,26 +161,43 @@ const Train = () => {
               </div>
 
               {/* Content Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <motion.div 
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+                className="grid grid-cols-1 md:grid-cols-2 gap-6"
+              >
                 <AnimatePresence mode="wait">
                   {selectedCategory === 'algorithms' && (
                     <motion.div
                       key="algorithms"
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
+                      className="grid gap-4"
+                      variants={containerVariants}
+                      initial="hidden"
+                      animate="visible"
                       exit={{ opacity: 0, x: 20 }}
-                      transition={{ duration: 0.3 }}
                     >
                       {algorithms.map((algo, index) => (
                         <motion.div
                           key={algo.name}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.3, delay: index * 0.1 }}
-                          className="bg-gray-50 p-4 rounded-lg mb-4 hover:bg-gray-100 transition-colors"
+                          variants={itemVariants}
+                          whileHover={{ 
+                            scale: 1.02,
+                            backgroundColor: "rgba(255, 255, 255, 0.9)",
+                            transition: { duration: 0.2 }
+                          }}
+                          className="bg-white/50 p-6 rounded-xl border border-white/50 shadow-sm hover:shadow-md transition-all duration-300"
                         >
-                          <h3 className="text-lg font-semibold">{algo.name}</h3>
-                          <p className="text-gray-600">{algo.problems} problems</p>
+                          <h3 className="text-lg font-semibold text-gray-800">{algo.name}</h3>
+                          <p className="text-gray-600 mt-2">{algo.problems} problems</p>
+                          <div className="mt-3 w-full bg-gray-200 rounded-full h-2">
+                            <motion.div
+                              initial={{ width: 0 }}
+                              animate={{ width: `${(algo.problems / 50) * 100}%` }}
+                              transition={{ duration: 1, delay: index * 0.1 }}
+                              className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"
+                            />
+                          </div>
                         </motion.div>
                       ))}
                     </motion.div>
@@ -143,21 +206,33 @@ const Train = () => {
                   {selectedCategory === 'data-structures' && (
                     <motion.div
                       key="data-structures"
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
+                      className="grid gap-4"
+                      variants={containerVariants}
+                      initial="hidden"
+                      animate="visible"
                       exit={{ opacity: 0, x: 20 }}
-                      transition={{ duration: 0.3 }}
                     >
                       {dataStructures.map((ds, index) => (
                         <motion.div
                           key={ds.name}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.3, delay: index * 0.1 }}
-                          className="bg-gray-50 p-4 rounded-lg mb-4 hover:bg-gray-100 transition-colors"
+                          variants={itemVariants}
+                          whileHover={{ 
+                            scale: 1.02,
+                            backgroundColor: "rgba(255, 255, 255, 0.9)",
+                            transition: { duration: 0.2 }
+                          }}
+                          className="bg-white/50 p-6 rounded-xl border border-white/50 shadow-sm hover:shadow-md transition-all duration-300"
                         >
-                          <h3 className="text-lg font-semibold">{ds.name}</h3>
-                          <p className="text-gray-600">{ds.problems} problems</p>
+                          <h3 className="text-lg font-semibold text-gray-800">{ds.name}</h3>
+                          <p className="text-gray-600 mt-2">{ds.problems} problems</p>
+                          <div className="mt-3 w-full bg-gray-200 rounded-full h-2">
+                            <motion.div
+                              initial={{ width: 0 }}
+                              animate={{ width: `${(ds.problems / 50) * 100}%` }}
+                              transition={{ duration: 1, delay: index * 0.1 }}
+                              className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"
+                            />
+                          </div>
                         </motion.div>
                       ))}
                     </motion.div>
@@ -166,27 +241,39 @@ const Train = () => {
                   {selectedCategory === 'languages' && (
                     <motion.div
                       key="languages"
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
+                      className="grid gap-4"
+                      variants={containerVariants}
+                      initial="hidden"
+                      animate="visible"
                       exit={{ opacity: 0, x: 20 }}
-                      transition={{ duration: 0.3 }}
                     >
                       {languages.map((lang, index) => (
                         <motion.div
                           key={lang.name}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.3, delay: index * 0.1 }}
-                          className="bg-gray-50 p-4 rounded-lg mb-4 hover:bg-gray-100 transition-colors"
+                          variants={itemVariants}
+                          whileHover={{ 
+                            scale: 1.02,
+                            backgroundColor: "rgba(255, 255, 255, 0.9)",
+                            transition: { duration: 0.2 }
+                          }}
+                          className="bg-white/50 p-6 rounded-xl border border-white/50 shadow-sm hover:shadow-md transition-all duration-300"
                         >
-                          <h3 className="text-lg font-semibold">{lang.name}</h3>
-                          <p className="text-gray-600">{lang.problems} problems</p>
+                          <h3 className="text-lg font-semibold text-gray-800">{lang.name}</h3>
+                          <p className="text-gray-600 mt-2">{lang.problems} problems</p>
+                          <div className="mt-3 w-full bg-gray-200 rounded-full h-2">
+                            <motion.div
+                              initial={{ width: 0 }}
+                              animate={{ width: `${(lang.problems / 50) * 100}%` }}
+                              transition={{ duration: 1, delay: index * 0.1 }}
+                              className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"
+                            />
+                          </div>
                         </motion.div>
                       ))}
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </div>
+              </motion.div>
             </div>
           </motion.div>
         </div>
@@ -199,41 +286,43 @@ const Train = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4"
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 z-50"
             onClick={() => setShowProfileModal(false)}
           >
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-xl p-8 max-w-md w-full"
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              className="bg-white/90 backdrop-blur-lg rounded-2xl p-8 max-w-md w-full shadow-2xl border border-white/20"
               onClick={(e) => e.stopPropagation()}
             >
-              <h2 className="text-2xl font-bold mb-4">User Profile</h2>
-              <div className="space-y-4">
-                <div>
+              <h2 className="text-2xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">User Profile</h2>
+              <div className="space-y-6">
+                <motion.div variants={itemVariants}>
                   <p className="text-gray-600">Username</p>
-                  <p className="text-lg font-semibold">User Name</p>
-                </div>
-                <div>
+                  <p className="text-lg font-semibold text-gray-800">User Name</p>
+                </motion.div>
+                <motion.div variants={itemVariants}>
                   <p className="text-gray-600">Email</p>
-                  <p className="text-lg font-semibold">user@example.com</p>
-                </div>
-                <div>
+                  <p className="text-lg font-semibold text-gray-800">user@example.com</p>
+                </motion.div>
+                <motion.div variants={itemVariants}>
                   <p className="text-gray-600">Member Since</p>
-                  <p className="text-lg font-semibold">January 2024</p>
-                </div>
-                <div>
+                  <p className="text-lg font-semibold text-gray-800">January 2024</p>
+                </motion.div>
+                <motion.div variants={itemVariants}>
                   <p className="text-gray-600">Current Rank</p>
-                  <p className="text-lg font-semibold">{userStats.rank}</p>
-                </div>
+                  <p className="text-lg font-semibold text-gray-800">{userStats.rank}</p>
+                </motion.div>
               </div>
-              <button
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={() => setShowProfileModal(false)}
-                className="mt-6 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                className="mt-8 w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl hover:shadow-lg transition-all duration-300 font-medium"
               >
                 Close
-              </button>
+              </motion.button>
             </motion.div>
           </motion.div>
         )}
