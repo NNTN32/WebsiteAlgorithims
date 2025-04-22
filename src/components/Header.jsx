@@ -43,7 +43,7 @@ const Header = () => {
           
           <div className="hidden md:flex space-x-8">
             <Link to="/" className="text-gray-700 hover:text-blue-600 transition-colors">Home</Link>
-            <Link to="/algorithms" className="text-gray-700 hover:text-blue-600 transition-colors">Algorithms</Link>
+            <Link to="/train" className="text-gray-700 hover:text-blue-600 transition-colors">Algorithms</Link>
             <Link to="/practice" className="text-gray-700 hover:text-blue-600 transition-colors">Practice</Link>
             <Link to="/about" className="text-gray-700 hover:text-blue-600 transition-colors">About</Link>
           </div>
