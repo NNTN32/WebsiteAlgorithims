@@ -2,12 +2,13 @@ import axios from "axios";
 
 const axiosInstance = axios.create({
     baseURL: 'http://localhost:8081/api/auth'
-})
+});
 
+// Request interceptor
 axiosInstance.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('token');
-        if(token){
+        if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
         return config;
@@ -15,17 +16,20 @@ axiosInstance.interceptors.request.use(
     (error) => {
         return Promise.reject(error);
     }
-)
+);
 
+// Response interceptor
 axiosInstance.interceptors.response.use(
     (response) => response,
     (error) => {
-      if (error.response?.status === 401 || error.response?.status === 403) {
-        localStorage.removeItem('token');
-        window.location.href = '/login';
-      }
-      return Promise.reject(error);
+        if (error.response?.status === 401 || error.response?.status === 403) {
+            // Clear auth data on unauthorized
+            localStorage.removeItem('token');
+            localStorage.removeItem('userData');
+            window.location.href = '/login';
+        }
+        return Promise.reject(error);
     }
-  );
-  
-  export default axiosInstance; 
+);
+
+export default axiosInstance; 
