@@ -10,4 +10,6 @@ import java.util.Optional;
 @Repository
 public interface TestcaseRepo extends JpaRepository<TestCase, Long> {
     Optional<TestCase> findByProblemId(Long problemId);
+
+    List<TestCase> findAllByProblemId(Long problemId);
 }

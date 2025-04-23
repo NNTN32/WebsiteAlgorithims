@@ -8,7 +8,14 @@ public class TestReponse {
     private String input;
     private String expectedOutput;
     private boolean sample;
-    private TestRequest problem;
+//    private TestRequest problem;
+
+    public TestReponse(Long id, String input, String expectedOutput, Boolean sample){
+        this.id = id;
+        this.input = input;
+        this.expectedOutput = expectedOutput;
+        this.sample = sample;
+    }
 
     public Long getId() {return id;}
 
@@ -35,11 +42,11 @@ public class TestReponse {
     public boolean isSample() { return sample; }
     public void setSample(boolean sample) { this.sample = sample; }
 
-    public TestRequest getProblem() {
-        return problem;
-    }
-
-    public void setProblem(TestRequest problem) {
-        this.problem = problem;
-    }
+//    public TestRequest getProblem() {
+//        return problem;
+//    }
+//
+//    public void setProblem(TestRequest problem) {
+//        this.problem = problem;
+//    }
 }
