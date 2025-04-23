@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
@@ -7,6 +7,20 @@ const Train = () => {
   const [selectedDifficulty, setSelectedDifficulty] = useState('all');
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+  // Track mouse position for parallax effect
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      setMousePosition({
+        x: e.clientX,
+        y: e.clientY
+      });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
   const categories = [
     { id: 'all', name: 'All Categories' },
@@ -27,16 +41,16 @@ const Train = () => {
   ];
 
   const problems = [
-    { id: 1, title: 'Two Sum', category: 'algorithms', difficulty: 'easy', status: 'solved' },
-    { id: 2, title: 'Add Two Numbers', category: 'data-structures', difficulty: 'medium', status: 'attempted' },
-    { id: 3, title: 'Longest Substring Without Repeating Characters', category: 'strings', difficulty: 'medium', status: 'unsolved' },
-    { id: 4, title: 'Median of Two Sorted Arrays', category: 'arrays', difficulty: 'hard', status: 'unsolved' },
-    { id: 5, title: 'Longest Palindromic Substring', category: 'strings', difficulty: 'medium', status: 'solved' },
-    { id: 6, title: 'Zigzag Conversion', category: 'strings', difficulty: 'medium', status: 'unsolved' },
-    { id: 7, title: 'Reverse Integer', category: 'algorithms', difficulty: 'easy', status: 'solved' },
-    { id: 8, title: 'String to Integer (atoi)', category: 'strings', difficulty: 'medium', status: 'attempted' },
-    { id: 9, title: 'Palindrome Number', category: 'algorithms', difficulty: 'easy', status: 'solved' },
-    { id: 10, title: 'Regular Expression Matching', category: 'strings', difficulty: 'hard', status: 'unsolved' },
+    { id: 1, title: 'Two Sum', category: 'algorithms', difficulty: 'easy' },
+    { id: 2, title: 'Add Two Numbers', category: 'data-structures', difficulty: 'medium' },
+    { id: 3, title: 'Longest Substring Without Repeating Characters', category: 'strings', difficulty: 'medium' },
+    { id: 4, title: 'Median of Two Sorted Arrays', category: 'arrays', difficulty: 'hard' },
+    { id: 5, title: 'Longest Palindromic Substring', category: 'strings', difficulty: 'medium' },
+    { id: 6, title: 'Zigzag Conversion', category: 'strings', difficulty: 'medium' },
+    { id: 7, title: 'Reverse Integer', category: 'algorithms', difficulty: 'easy' },
+    { id: 8, title: 'String to Integer (atoi)', category: 'strings', difficulty: 'medium' },
+    { id: 9, title: 'Palindrome Number', category: 'algorithms', difficulty: 'easy' },
+    { id: 10, title: 'Regular Expression Matching', category: 'strings', difficulty: 'hard' },
   ];
 
   const userStats = {
@@ -79,8 +93,80 @@ const Train = () => {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 pt-20">
-      <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 pt-20 relative overflow-hidden">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Floating code symbols */}
+        <motion.div 
+          className="absolute top-20 left-20 text-blue-400/10 text-6xl font-mono"
+          animate={{ 
+            y: [0, -20, 0],
+            rotate: [0, 5, 0]
+          }}
+          transition={{ 
+            duration: 8,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        >
+          {`{ }`}
+        </motion.div>
+        <motion.div 
+          className="absolute top-40 right-20 text-purple-400/10 text-5xl font-mono"
+          animate={{ 
+            y: [0, 15, 0],
+            rotate: [0, -5, 0]
+          }}
+          transition={{ 
+            duration: 10,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        >
+          {`[ ]`}
+        </motion.div>
+        <motion.div 
+          className="absolute bottom-40 left-1/3 text-green-400/10 text-7xl font-mono"
+          animate={{ 
+            y: [0, -10, 0],
+            rotate: [0, 3, 0]
+          }}
+          transition={{ 
+            duration: 9,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        >
+          {`( )`}
+        </motion.div>
+        
+        {/* Grid pattern */}
+        <div 
+          className="absolute inset-0 opacity-5"
+          style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0)`,
+            backgroundSize: '40px 40px'
+          }}
+        />
+        
+        {/* Glowing orbs with parallax effect */}
+        <motion.div 
+          className="absolute w-64 h-64 rounded-full bg-blue-500/5 blur-3xl"
+          style={{
+            left: `${mousePosition.x * 0.02}px`,
+            top: `${mousePosition.y * 0.02}px`,
+          }}
+        />
+        <motion.div 
+          className="absolute w-96 h-96 rounded-full bg-purple-500/5 blur-3xl"
+          style={{
+            left: `${mousePosition.x * -0.03}px`,
+            top: `${mousePosition.y * -0.03}px`,
+          }}
+        />
+      </div>
+
+      <div className="container mx-auto px-4 py-8 relative z-10">
         <div className="flex gap-8">
           {/* Sidebar */}
           <motion.div
@@ -91,18 +177,18 @@ const Train = () => {
               stiffness: 100,
               damping: 15
             }}
-            className="w-80 bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl p-6 h-fit sticky top-24 border border-white/20"
+            className="w-80 bg-slate-800/50 backdrop-blur-lg rounded-2xl shadow-xl p-6 h-fit sticky top-24 border border-slate-700/30"
           >
             <div className="text-center mb-6">
               <motion.div 
-                className="w-24 h-24 bg-gradient-to-br from-blue-400 to-purple-400 rounded-full mx-auto mb-4 flex items-center justify-center shadow-lg"
+                className="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full mx-auto mb-4 flex items-center justify-center shadow-lg"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
                 <span className="text-4xl">👤</span>
               </motion.div>
-              <h3 className="text-xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">User Name</h3>
-              <p className="text-gray-500">Rank: {userStats.rank}</p>
+              <h3 className="text-xl font-semibold text-white">User Name</h3>
+              <p className="text-slate-400">Rank: {userStats.rank}</p>
             </div>
 
             <motion.div 
@@ -113,24 +199,24 @@ const Train = () => {
             >
               <motion.div 
                 variants={itemVariants}
-                className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-xl shadow-sm border border-white/50"
+                className="bg-slate-700/30 p-4 rounded-xl shadow-sm border border-slate-600/30"
               >
-                <p className="text-gray-600">Total Problems</p>
-                <p className="text-2xl font-bold text-blue-600">{userStats.totalProblems}</p>
+                <p className="text-slate-400">Total Problems</p>
+                <p className="text-2xl font-bold text-blue-400">{userStats.totalProblems}</p>
               </motion.div>
               <motion.div 
                 variants={itemVariants}
-                className="bg-gradient-to-r from-indigo-50 to-purple-50 p-4 rounded-xl shadow-sm border border-white/50"
+                className="bg-slate-700/30 p-4 rounded-xl shadow-sm border border-slate-600/30"
               >
-                <p className="text-gray-600">Solved Problems</p>
-                <p className="text-2xl font-bold text-indigo-600">{userStats.solvedProblems}</p>
+                <p className="text-slate-400">Solved Problems</p>
+                <p className="text-2xl font-bold text-purple-400">{userStats.solvedProblems}</p>
               </motion.div>
               <motion.div 
                 variants={itemVariants}
-                className="bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-xl shadow-sm border border-white/50"
+                className="bg-slate-700/30 p-4 rounded-xl shadow-sm border border-slate-600/30"
               >
-                <p className="text-gray-600">Accuracy</p>
-                <p className="text-2xl font-bold text-purple-600">{userStats.accuracy}%</p>
+                <p className="text-slate-400">Accuracy</p>
+                <p className="text-2xl font-bold text-green-400">{userStats.accuracy}%</p>
               </motion.div>
             </motion.div>
 
@@ -151,8 +237,8 @@ const Train = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="flex-1"
           >
-            <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl p-8 border border-white/20">
-              <h1 className="text-4xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">Training Center</h1>
+            <div className="bg-slate-800/50 backdrop-blur-lg rounded-2xl shadow-xl p-8 border border-slate-700/30">
+              <h1 className="text-4xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">Training Center</h1>
               
               {/* Search Bar */}
               <div className="mb-6">
@@ -162,9 +248,9 @@ const Train = () => {
                     placeholder="Search problems..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 rounded-xl border border-slate-600/30 bg-slate-700/30 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
-                  <span className="absolute right-4 top-3 text-gray-400">🔍</span>
+                  <span className="absolute right-4 top-3 text-slate-400">🔍</span>
                 </div>
               </div>
 
@@ -172,11 +258,11 @@ const Train = () => {
               <div className="flex flex-wrap gap-4 mb-8">
                 {/* Category Filter */}
                 <div className="flex-1 min-w-[200px]">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">Category</label>
                   <select
                     value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                    className="w-full px-4 py-3 rounded-xl border border-slate-600/30 bg-slate-700/30 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
                     {categories.map(category => (
                       <option key={category.id} value={category.id}>{category.name}</option>
@@ -186,11 +272,11 @@ const Train = () => {
 
                 {/* Difficulty Filter */}
                 <div className="flex-1 min-w-[200px]">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Difficulty</label>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">Difficulty</label>
                   <select
                     value={selectedDifficulty}
                     onChange={(e) => setSelectedDifficulty(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                    className="w-full px-4 py-3 rounded-xl border border-slate-600/30 bg-slate-700/30 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
                     {difficultyLevels.map(level => (
                       <option key={level.id} value={level.id}>{level.name}</option>
@@ -213,23 +299,23 @@ const Train = () => {
                       variants={itemVariants}
                       whileHover={{ 
                         scale: 1.02,
-                        backgroundColor: "rgba(255, 255, 255, 0.9)",
+                        backgroundColor: "rgba(30, 41, 59, 0.7)",
                         transition: { duration: 0.2 }
                       }}
-                      className="bg-white/50 p-6 rounded-xl border border-white/50 shadow-sm hover:shadow-md transition-all duration-300"
+                      className="bg-slate-700/30 p-6 rounded-xl border border-slate-600/30 shadow-sm hover:shadow-md transition-all duration-300"
                     >
                       <div className="flex items-center justify-between">
                         <div>
-                          <h3 className="text-lg font-semibold text-gray-800">{problem.title}</h3>
+                          <h3 className="text-lg font-semibold text-white">{problem.title}</h3>
                           <div className="flex gap-2 mt-2">
                             <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                              problem.difficulty === 'easy' ? 'bg-green-100 text-green-800' :
-                              problem.difficulty === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-                              'bg-red-100 text-red-800'
+                              problem.difficulty === 'easy' ? 'bg-green-900/30 text-green-400' :
+                              problem.difficulty === 'medium' ? 'bg-yellow-900/30 text-yellow-400' :
+                              'bg-red-900/30 text-red-400'
                             }`}>
                               {problem.difficulty.charAt(0).toUpperCase() + problem.difficulty.slice(1)}
                             </span>
-                            <span className="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            <span className="px-3 py-1 rounded-full text-xs font-medium bg-blue-900/30 text-blue-400">
                               {problem.category.replace('-', ' ').split(' ').map(word => 
                                 word.charAt(0).toUpperCase() + word.slice(1)
                               ).join(' ')}
@@ -237,13 +323,6 @@ const Train = () => {
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                            problem.status === 'solved' ? 'bg-green-100 text-green-800' :
-                            problem.status === 'attempted' ? 'bg-yellow-100 text-yellow-800' :
-                            'bg-gray-100 text-gray-800'
-                          }`}>
-                            {problem.status.charAt(0).toUpperCase() + problem.status.slice(1)}
-                          </span>
                           <Link to={`/problem/${problem.id}`}>
                             <motion.button
                               whileHover={{ scale: 1.05 }}
@@ -259,7 +338,7 @@ const Train = () => {
                   ))
                 ) : (
                   <div className="text-center py-8">
-                    <p className="text-gray-500 text-lg">No problems found matching your criteria.</p>
+                    <p className="text-slate-400 text-lg">No problems found matching your criteria.</p>
                   </div>
                 )}
               </motion.div>
@@ -275,33 +354,33 @@ const Train = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 z-50"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50"
             onClick={() => setShowProfileModal(false)}
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              className="bg-white/90 backdrop-blur-lg rounded-2xl p-8 max-w-md w-full shadow-2xl border border-white/20"
+              className="bg-slate-800/90 backdrop-blur-lg rounded-2xl p-8 max-w-md w-full shadow-2xl border border-slate-700/30"
               onClick={(e) => e.stopPropagation()}
             >
-              <h2 className="text-2xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">User Profile</h2>
+              <h2 className="text-2xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">User Profile</h2>
               <div className="space-y-6">
                 <motion.div variants={itemVariants}>
-                  <p className="text-gray-600">Username</p>
-                  <p className="text-lg font-semibold text-gray-800">User Name</p>
+                  <p className="text-slate-400">Username</p>
+                  <p className="text-lg font-semibold text-white">User Name</p>
                 </motion.div>
                 <motion.div variants={itemVariants}>
-                  <p className="text-gray-600">Email</p>
-                  <p className="text-lg font-semibold text-gray-800">user@example.com</p>
+                  <p className="text-slate-400">Email</p>
+                  <p className="text-lg font-semibold text-white">user@example.com</p>
                 </motion.div>
                 <motion.div variants={itemVariants}>
-                  <p className="text-gray-600">Member Since</p>
-                  <p className="text-lg font-semibold text-gray-800">January 2024</p>
+                  <p className="text-slate-400">Member Since</p>
+                  <p className="text-lg font-semibold text-white">January 2024</p>
                 </motion.div>
                 <motion.div variants={itemVariants}>
-                  <p className="text-gray-600">Current Rank</p>
-                  <p className="text-lg font-semibold text-gray-800">{userStats.rank}</p>
+                  <p className="text-slate-400">Current Rank</p>
+                  <p className="text-lg font-semibold text-white">{userStats.rank}</p>
                 </motion.div>
               </div>
               <motion.button
