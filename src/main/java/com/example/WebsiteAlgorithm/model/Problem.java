@@ -21,4 +21,17 @@ public class Problem {
 
     private String topicTags; // eg: "DP, Array, Greedy"
     private LocalDateTime createdAt;
+
+    public void setTitle(String title) { this.title = title; }
+    public void setDescription(String description) { this.description = description; }
+    public void setDifficulty(String difficulty) { this.difficulty = difficulty; }
+    public void setTopicTags(String topicTags) { this.topicTags = topicTags; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public Long getId() {return  id; }
+    public String getTitle() {return title; }
+    public String getDescription() {return description; }
+    public String getDifficulty() {return difficulty; }
+    public String getTopicTags() {return topicTags; }
+
 }
