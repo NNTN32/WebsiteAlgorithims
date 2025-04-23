@@ -3,36 +3,40 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
 const Train = () => {
-  const [selectedCategory, setSelectedCategory] = useState('algorithms');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedDifficulty, setSelectedDifficulty] = useState('all');
   const [showProfileModal, setShowProfileModal] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const categories = [
-    { id: 'algorithms', name: 'Algorithms', icon: '🧮' },
-    { id: 'data-structures', name: 'Data Structures', icon: '📚' },
-    { id: 'languages', name: 'Programming Languages', icon: '💻' },
+    { id: 'all', name: 'All Categories' },
+    { id: 'algorithms', name: 'Algorithms' },
+    { id: 'data-structures', name: 'Data Structures' },
+    { id: 'strings', name: 'Strings' },
+    { id: 'arrays', name: 'Arrays' },
+    { id: 'trees', name: 'Trees' },
+    { id: 'graphs', name: 'Graphs' },
+    { id: 'dynamic-programming', name: 'Dynamic Programming' },
   ];
 
-  const algorithms = [
-    { name: 'Sorting Algorithms', problems: 25 },
-    { name: 'Searching Algorithms', problems: 15 },
-    { name: 'Dynamic Programming', problems: 30 },
-    { name: 'Graph Algorithms', problems: 20 },
-    { name: 'Greedy Algorithms', problems: 15 },
+  const difficultyLevels = [
+    { id: 'all', name: 'All Difficulties' },
+    { id: 'easy', name: 'Easy' },
+    { id: 'medium', name: 'Medium' },
+    { id: 'hard', name: 'Hard' },
   ];
 
-  const dataStructures = [
-    { name: 'Arrays', problems: 20 },
-    { name: 'Linked Lists', problems: 15 },
-    { name: 'Trees', problems: 25 },
-    { name: 'Graphs', problems: 20 },
-    { name: 'Hash Tables', problems: 15 },
-  ];
-
-  const languages = [
-    { name: 'Python', problems: 50 },
-    { name: 'JavaScript', problems: 45 },
-    { name: 'Java', problems: 40 },
-    { name: 'C++', problems: 35 },
+  const problems = [
+    { id: 1, title: 'Two Sum', category: 'algorithms', difficulty: 'easy', status: 'solved' },
+    { id: 2, title: 'Add Two Numbers', category: 'data-structures', difficulty: 'medium', status: 'attempted' },
+    { id: 3, title: 'Longest Substring Without Repeating Characters', category: 'strings', difficulty: 'medium', status: 'unsolved' },
+    { id: 4, title: 'Median of Two Sorted Arrays', category: 'arrays', difficulty: 'hard', status: 'unsolved' },
+    { id: 5, title: 'Longest Palindromic Substring', category: 'strings', difficulty: 'medium', status: 'solved' },
+    { id: 6, title: 'Zigzag Conversion', category: 'strings', difficulty: 'medium', status: 'unsolved' },
+    { id: 7, title: 'Reverse Integer', category: 'algorithms', difficulty: 'easy', status: 'solved' },
+    { id: 8, title: 'String to Integer (atoi)', category: 'strings', difficulty: 'medium', status: 'attempted' },
+    { id: 9, title: 'Palindrome Number', category: 'algorithms', difficulty: 'easy', status: 'solved' },
+    { id: 10, title: 'Regular Expression Matching', category: 'strings', difficulty: 'hard', status: 'unsolved' },
   ];
 
   const userStats = {
@@ -63,6 +67,16 @@ const Train = () => {
       }
     }
   };
+
+  // Filter problems based on selected category, difficulty, and search query
+  const filteredProblems = problems.filter(problem => {
+    const matchesCategory = selectedCategory === 'all' || problem.category === selectedCategory;
+    const matchesDifficulty = selectedDifficulty === 'all' || problem.difficulty === selectedDifficulty;
+    const matchesSearch = searchQuery === '' || 
+      problem.title.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    return matchesCategory && matchesDifficulty && matchesSearch;
+  });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 pt-20">
@@ -140,139 +154,114 @@ const Train = () => {
             <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl p-8 border border-white/20">
               <h1 className="text-4xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">Training Center</h1>
               
-              {/* Category Tabs */}
-              <div className="flex gap-4 mb-8 flex-wrap">
-                {categories.map((category) => (
-                  <motion.button
-                    key={category.id}
-                    whileHover={{ scale: 1.05, y: -2 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setSelectedCategory(category.id)}
-                    className={`flex items-center gap-2 px-6 py-3 rounded-xl transition-all duration-300 ${
-                      selectedCategory === category.id
-                        ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
-                        : 'bg-white/50 text-gray-700 hover:bg-white hover:shadow-md'
-                    }`}
-                  >
-                    <span className="text-xl">{category.icon}</span>
-                    {category.name}
-                  </motion.button>
-                ))}
+              {/* Search Bar */}
+              <div className="mb-6">
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Search problems..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                  <span className="absolute right-4 top-3 text-gray-400">🔍</span>
+                </div>
               </div>
 
-              {/* Content Grid */}
+              {/* Filters */}
+              <div className="flex flex-wrap gap-4 mb-8">
+                {/* Category Filter */}
+                <div className="flex-1 min-w-[200px]">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                  <select
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                  >
+                    {categories.map(category => (
+                      <option key={category.id} value={category.id}>{category.name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Difficulty Filter */}
+                <div className="flex-1 min-w-[200px]">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Difficulty</label>
+                  <select
+                    value={selectedDifficulty}
+                    onChange={(e) => setSelectedDifficulty(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                  >
+                    {difficultyLevels.map(level => (
+                      <option key={level.id} value={level.id}>{level.name}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Problems List */}
               <motion.div 
                 variants={containerVariants}
                 initial="hidden"
                 animate="visible"
-                className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                className="space-y-4"
               >
-                <AnimatePresence mode="wait">
-                  {selectedCategory === 'algorithms' && (
+                {filteredProblems.length > 0 ? (
+                  filteredProblems.map((problem, index) => (
                     <motion.div
-                      key="algorithms"
-                      className="grid gap-4"
-                      variants={containerVariants}
-                      initial="hidden"
-                      animate="visible"
-                      exit={{ opacity: 0, x: 20 }}
+                      key={problem.id}
+                      variants={itemVariants}
+                      whileHover={{ 
+                        scale: 1.02,
+                        backgroundColor: "rgba(255, 255, 255, 0.9)",
+                        transition: { duration: 0.2 }
+                      }}
+                      className="bg-white/50 p-6 rounded-xl border border-white/50 shadow-sm hover:shadow-md transition-all duration-300"
                     >
-                      {algorithms.map((algo, index) => (
-                        <motion.div
-                          key={algo.name}
-                          variants={itemVariants}
-                          whileHover={{ 
-                            scale: 1.02,
-                            backgroundColor: "rgba(255, 255, 255, 0.9)",
-                            transition: { duration: 0.2 }
-                          }}
-                          className="bg-white/50 p-6 rounded-xl border border-white/50 shadow-sm hover:shadow-md transition-all duration-300"
-                        >
-                          <h3 className="text-lg font-semibold text-gray-800">{algo.name}</h3>
-                          <p className="text-gray-600 mt-2">{algo.problems} problems</p>
-                          <div className="mt-3 w-full bg-gray-200 rounded-full h-2">
-                            <motion.div
-                              initial={{ width: 0 }}
-                              animate={{ width: `${(algo.problems / 50) * 100}%` }}
-                              transition={{ duration: 1, delay: index * 0.1 }}
-                              className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"
-                            />
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h3 className="text-lg font-semibold text-gray-800">{problem.title}</h3>
+                          <div className="flex gap-2 mt-2">
+                            <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                              problem.difficulty === 'easy' ? 'bg-green-100 text-green-800' :
+                              problem.difficulty === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                              'bg-red-100 text-red-800'
+                            }`}>
+                              {problem.difficulty.charAt(0).toUpperCase() + problem.difficulty.slice(1)}
+                            </span>
+                            <span className="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                              {problem.category.replace('-', ' ').split(' ').map(word => 
+                                word.charAt(0).toUpperCase() + word.slice(1)
+                              ).join(' ')}
+                            </span>
                           </div>
-                        </motion.div>
-                      ))}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                            problem.status === 'solved' ? 'bg-green-100 text-green-800' :
+                            problem.status === 'attempted' ? 'bg-yellow-100 text-yellow-800' :
+                            'bg-gray-100 text-gray-800'
+                          }`}>
+                            {problem.status.charAt(0).toUpperCase() + problem.status.slice(1)}
+                          </span>
+                          <Link to={`/problem/${problem.id}`}>
+                            <motion.button
+                              whileHover={{ scale: 1.05 }}
+                              whileTap={{ scale: 0.95 }}
+                              className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all duration-300"
+                            >
+                              Solve
+                            </motion.button>
+                          </Link>
+                        </div>
+                      </div>
                     </motion.div>
-                  )}
-
-                  {selectedCategory === 'data-structures' && (
-                    <motion.div
-                      key="data-structures"
-                      className="grid gap-4"
-                      variants={containerVariants}
-                      initial="hidden"
-                      animate="visible"
-                      exit={{ opacity: 0, x: 20 }}
-                    >
-                      {dataStructures.map((ds, index) => (
-                        <motion.div
-                          key={ds.name}
-                          variants={itemVariants}
-                          whileHover={{ 
-                            scale: 1.02,
-                            backgroundColor: "rgba(255, 255, 255, 0.9)",
-                            transition: { duration: 0.2 }
-                          }}
-                          className="bg-white/50 p-6 rounded-xl border border-white/50 shadow-sm hover:shadow-md transition-all duration-300"
-                        >
-                          <h3 className="text-lg font-semibold text-gray-800">{ds.name}</h3>
-                          <p className="text-gray-600 mt-2">{ds.problems} problems</p>
-                          <div className="mt-3 w-full bg-gray-200 rounded-full h-2">
-                            <motion.div
-                              initial={{ width: 0 }}
-                              animate={{ width: `${(ds.problems / 50) * 100}%` }}
-                              transition={{ duration: 1, delay: index * 0.1 }}
-                              className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"
-                            />
-                          </div>
-                        </motion.div>
-                      ))}
-                    </motion.div>
-                  )}
-
-                  {selectedCategory === 'languages' && (
-                    <motion.div
-                      key="languages"
-                      className="grid gap-4"
-                      variants={containerVariants}
-                      initial="hidden"
-                      animate="visible"
-                      exit={{ opacity: 0, x: 20 }}
-                    >
-                      {languages.map((lang, index) => (
-                        <motion.div
-                          key={lang.name}
-                          variants={itemVariants}
-                          whileHover={{ 
-                            scale: 1.02,
-                            backgroundColor: "rgba(255, 255, 255, 0.9)",
-                            transition: { duration: 0.2 }
-                          }}
-                          className="bg-white/50 p-6 rounded-xl border border-white/50 shadow-sm hover:shadow-md transition-all duration-300"
-                        >
-                          <h3 className="text-lg font-semibold text-gray-800">{lang.name}</h3>
-                          <p className="text-gray-600 mt-2">{lang.problems} problems</p>
-                          <div className="mt-3 w-full bg-gray-200 rounded-full h-2">
-                            <motion.div
-                              initial={{ width: 0 }}
-                              animate={{ width: `${(lang.problems / 50) * 100}%` }}
-                              transition={{ duration: 1, delay: index * 0.1 }}
-                              className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"
-                            />
-                          </div>
-                        </motion.div>
-                      ))}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                  ))
+                ) : (
+                  <div className="text-center py-8">
+                    <p className="text-gray-500 text-lg">No problems found matching your criteria.</p>
+                  </div>
+                )}
               </motion.div>
             </div>
           </motion.div>
