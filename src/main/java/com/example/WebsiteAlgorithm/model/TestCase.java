@@ -18,9 +18,12 @@ public class TestCase {
     private Problem problem;
 
     @Lob
+    @Basic(fetch = FetchType.EAGER)  // Chỉnh FetchType.LAZY thành FetchType.EAGER
     @Column(columnDefinition = "TEXT")
     private String input;
+
     @Lob
+    @Basic(fetch = FetchType.EAGER)  // Chỉnh FetchType.LAZY thành FetchType.EAGER
     @Column(columnDefinition = "TEXT")
     private String expectedOutput;
 
