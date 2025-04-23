@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -51,39 +52,4 @@ public class TestcaseService {
         return saved;
     }
 
-    public TestReponse getTestCaseByProblemId(Long problemId) throws Exception {
-        String key = "testcase:" + problemId;
-        String cached = redisTemplate.opsForValue().get(key);
-
-        TestCase tc;
-
-        if (cached != null) {
-            tc = objectMapper.readValue(cached, TestCase.class);
-        } else {
-            tc = testCaseRepo.findByProblemId(problemId)
-                    .orElseThrow(() -> new IllegalArgumentException("Không có testcase cho problem này"));
-            redisTemplate.opsForValue().set(key, objectMapper.writeValueAsString(tc));
-        }
-
-        // Map sang TestResponse
-        TestReponse response = new TestReponse();
-        response.setInput(tc.getInput());
-        response.setExpectedOutput(tc.getExpectedOutput());
-        response.setSample(tc.isSample());
-
-        // Map Problem => TestRequest
-        if (tc.getProblem() != null) {
-            Problem p = tc.getProblem();
-            TestRequest pr = new TestRequest(
-                    p.getId(),
-                    p.getTitle(),
-                    p.getDescription(),
-                    p.getDifficulty(),
-                    p.getTopicTags()
-            );
-            response.setProblem(pr);
-        }
-
-        return response;
-    }
 }

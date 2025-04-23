@@ -1,5 +1,6 @@
 package com.example.WebsiteAlgorithm.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -11,13 +12,17 @@ public class TestCase {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonIgnore
     @OneToOne
-    @JoinColumn(name = "problem_id", unique = true)
+    @JoinColumn(name = "problem_id")
     private Problem problem;
 
     @Lob
+    @Column(columnDefinition = "TEXT")
     private String input;
-    @Lob private String expectedOutput;
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String expectedOutput;
 
     private boolean isSample;
 

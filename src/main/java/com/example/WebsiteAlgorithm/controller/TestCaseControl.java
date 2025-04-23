@@ -18,9 +18,4 @@ public class TestCaseControl {
     public ResponseEntity<?> create(@PathVariable Long problemId, @RequestBody TestReponse req) throws Exception {
         return ResponseEntity.ok(testcaseService.create(problemId, req));
     }
-
-    @GetMapping("/{problemId}")
-    public ResponseEntity<?> getTestCase(@PathVariable Long problemId) throws Exception {
-        return ResponseEntity.ok(testcaseService.getTestCaseByProblemId(problemId));
-    }
 }

@@ -38,7 +38,6 @@ public class SecurityConfig {
                                 "/api/auth/register",
                                 "/api/auth/login/result/{sessionId}",
                                 "/api/problem",
-                                "/api/test/{problemId}",
                                 "/ws/**",               //Cho phép WebSocket connect
                                 "/topic/**", "/queue/**", "/app/**"  // Nếu cần, cho các topic
                         ).permitAll()
