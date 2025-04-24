@@ -8,6 +8,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Train from './pages/Users/Train';
+import Task from './pages/Users/Task';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/train" element={<Train />} />
+              <Route path="/problem/:problemId" element={<Task />} />
             </Routes>
           </main>
           <Footer />
