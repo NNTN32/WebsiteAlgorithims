@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 const Train = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -8,6 +9,10 @@ const Train = () => {
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [problems, setProblems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [categories, setCategories] = useState([{ id: 'all', name: 'All Categories' }]);
 
   // Track mouse position for parallax effect
   useEffect(() => {
@@ -22,35 +27,52 @@ const Train = () => {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
-  const categories = [
-    { id: 'all', name: 'All Categories' },
-    { id: 'algorithms', name: 'Algorithms' },
-    { id: 'data-structures', name: 'Data Structures' },
-    { id: 'strings', name: 'Strings' },
-    { id: 'arrays', name: 'Arrays' },
-    { id: 'trees', name: 'Trees' },
-    { id: 'graphs', name: 'Graphs' },
-    { id: 'dynamic-programming', name: 'Dynamic Programming' },
-  ];
+  // Fetch problems from API
+  useEffect(() => {
+    const fetchProblems = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get('http://localhost:8081/api/problem');
+        // Xử lý dữ liệu và tạo danh sách categories từ topicTags
+        const processedData = response.data.map(problem => ({
+          ...problem,
+          // Chuyển đổi topicTags từ string thành array
+          topicTags: problem.topicTags ? problem.topicTags.split(',').map(tag => tag.trim()) : []
+        }));
+
+        // Tạo danh sách categories duy nhất từ tất cả topicTags
+        const uniqueCategories = new Set();
+        processedData.forEach(problem => {
+          problem.topicTags.forEach(tag => uniqueCategories.add(tag));
+        });
+
+        // Cập nhật state categories
+        setCategories([
+          { id: 'all', name: 'All Categories' },
+          ...Array.from(uniqueCategories).map(tag => ({
+            id: tag.toLowerCase(),
+            name: tag
+          }))
+        ]);
+
+        setProblems(processedData);
+        setError(null);
+      } catch (err) {
+        console.error('Failed to fetch problems:', err);
+        setError('Failed to load problems. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProblems();
+  }, []);
 
   const difficultyLevels = [
     { id: 'all', name: 'All Difficulties' },
     { id: 'easy', name: 'Easy' },
     { id: 'medium', name: 'Medium' },
     { id: 'hard', name: 'Hard' },
-  ];
-
-  const problems = [
-    { id: 1, title: 'Two Sum', category: 'algorithms', difficulty: 'easy' },
-    { id: 2, title: 'Add Two Numbers', category: 'data-structures', difficulty: 'medium' },
-    { id: 3, title: 'Longest Substring Without Repeating Characters', category: 'strings', difficulty: 'medium' },
-    { id: 4, title: 'Median of Two Sorted Arrays', category: 'arrays', difficulty: 'hard' },
-    { id: 5, title: 'Longest Palindromic Substring', category: 'strings', difficulty: 'medium' },
-    { id: 6, title: 'Zigzag Conversion', category: 'strings', difficulty: 'medium' },
-    { id: 7, title: 'Reverse Integer', category: 'algorithms', difficulty: 'easy' },
-    { id: 8, title: 'String to Integer (atoi)', category: 'strings', difficulty: 'medium' },
-    { id: 9, title: 'Palindrome Number', category: 'algorithms', difficulty: 'easy' },
-    { id: 10, title: 'Regular Expression Matching', category: 'strings', difficulty: 'hard' },
   ];
 
   const userStats = {
@@ -84,10 +106,14 @@ const Train = () => {
 
   // Filter problems based on selected category, difficulty, and search query
   const filteredProblems = problems.filter(problem => {
-    const matchesCategory = selectedCategory === 'all' || problem.category === selectedCategory;
-    const matchesDifficulty = selectedDifficulty === 'all' || problem.difficulty === selectedDifficulty;
+    const matchesCategory = selectedCategory === 'all' || 
+      (problem.topicTags && problem.topicTags.some(tag => 
+        tag.toLowerCase() === selectedCategory.toLowerCase()
+      ));
+    const matchesDifficulty = selectedDifficulty === 'all' || 
+      (problem.difficulty && problem.difficulty.toLowerCase() === selectedDifficulty.toLowerCase());
     const matchesSearch = searchQuery === '' || 
-      problem.title.toLowerCase().includes(searchQuery.toLowerCase());
+      (problem.title && problem.title.toLowerCase().includes(searchQuery.toLowerCase()));
     
     return matchesCategory && matchesDifficulty && matchesSearch;
   });
@@ -202,7 +228,7 @@ const Train = () => {
                 className="bg-slate-700/30 p-4 rounded-xl shadow-sm border border-slate-600/30"
               >
                 <p className="text-slate-400">Total Problems</p>
-                <p className="text-2xl font-bold text-blue-400">{userStats.totalProblems}</p>
+                <p className="text-2xl font-bold text-blue-400">{problems.length}</p>
               </motion.div>
               <motion.div 
                 variants={itemVariants}
@@ -292,8 +318,25 @@ const Train = () => {
                 animate="visible"
                 className="space-y-4"
               >
-                {filteredProblems.length > 0 ? (
-                  filteredProblems.map((problem, index) => (
+                {loading ? (
+                  <div className="text-center py-12">
+                    <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-blue-400 border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" role="status">
+                      <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">Loading...</span>
+                    </div>
+                    <p className="mt-4 text-slate-400">Loading problems...</p>
+                  </div>
+                ) : error ? (
+                  <div className="text-center py-8">
+                    <p className="text-red-400 text-lg">{error}</p>
+                    <button 
+                      onClick={() => window.location.reload()}
+                      className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                      Try Again
+                    </button>
+                  </div>
+                ) : filteredProblems.length > 0 ? (
+                  filteredProblems.map((problem) => (
                     <motion.div
                       key={problem.id}
                       variants={itemVariants}
@@ -308,18 +351,20 @@ const Train = () => {
                         <div>
                           <h3 className="text-lg font-semibold text-white">{problem.title}</h3>
                           <div className="flex gap-2 mt-2">
-                            <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                              problem.difficulty === 'easy' ? 'bg-green-900/30 text-green-400' :
-                              problem.difficulty === 'medium' ? 'bg-yellow-900/30 text-yellow-400' :
-                              'bg-red-900/30 text-red-400'
-                            }`}>
-                              {problem.difficulty.charAt(0).toUpperCase() + problem.difficulty.slice(1)}
-                            </span>
-                            <span className="px-3 py-1 rounded-full text-xs font-medium bg-blue-900/30 text-blue-400">
-                              {problem.category.replace('-', ' ').split(' ').map(word => 
-                                word.charAt(0).toUpperCase() + word.slice(1)
-                              ).join(' ')}
-                            </span>
+                            {problem.difficulty && (
+                              <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                                problem.difficulty.toLowerCase() === 'easy' ? 'bg-green-900/30 text-green-400' :
+                                problem.difficulty.toLowerCase() === 'medium' ? 'bg-yellow-900/30 text-yellow-400' :
+                                'bg-red-900/30 text-red-400'
+                              }`}>
+                                {problem.difficulty.charAt(0).toUpperCase() + problem.difficulty.slice(1).toLowerCase()}
+                              </span>
+                            )}
+                            {problem.topicTags && problem.topicTags.map((tag, i) => (
+                              <span key={i} className="px-3 py-1 rounded-full text-xs font-medium bg-blue-900/30 text-blue-400">
+                                {tag}
+                              </span>
+                            ))}
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
