@@ -15,6 +15,7 @@ public class CodeTemplate {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "problem_id")
     private Problem problem;
 
     private String language; // Java, Python, etc.

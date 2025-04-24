@@ -15,7 +15,9 @@ public class DraftCode {
 
     @ManyToOne
     private User user;
-    @ManyToOne private Problem problem;
+    @ManyToOne
+    @JoinColumn(name = "problem_id")
+    private Problem problem;
 
     private String language;
     @Lob private String code;
