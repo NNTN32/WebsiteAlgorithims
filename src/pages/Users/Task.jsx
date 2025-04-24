@@ -8,6 +8,7 @@ const Task = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [problem, setProblem] = useState(null);
+  const [testCases, setTestCases] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -60,6 +61,30 @@ const Task = () => {
 
     fetchProblemDetails();
   }, [problemId, navigate, user]);
+
+  useEffect(() => {
+    const fetchTestCases = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+
+        const response = await axios.get(`http://localhost:8081/api/test/${problemId}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        setTestCases(response.data.testcase);
+      } catch (err) {
+        console.error('Error fetching test cases:', err);
+        // Don't set error state here to avoid disrupting the main UI
+      }
+    };
+
+    if (problemId) {
+      fetchTestCases();
+    }
+  }, [problemId]);
 
   if (loading) {
     return (
@@ -122,6 +147,34 @@ const Task = () => {
               <h2 className="text-xl font-semibold text-white mb-4">Description</h2>
               <div className="text-slate-300 whitespace-pre-wrap">{problem.description}</div>
             </div>
+
+            {/* Test Cases Section */}
+            {testCases && (
+              <div className="mt-8">
+                <h2 className="text-xl font-semibold text-white mb-4">Test Cases</h2>
+                <div className="bg-slate-700/30 rounded-lg p-4">
+                  <div className="mb-4">
+                    <h3 className="text-lg font-medium text-white mb-2">Input:</h3>
+                    <pre className="bg-slate-800 p-3 rounded text-slate-300 overflow-x-auto">
+                      {testCases.input}
+                    </pre>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-medium text-white mb-2">Expected Output:</h3>
+                    <pre className="bg-slate-800 p-3 rounded text-slate-300 overflow-x-auto">
+                      {testCases.expectedOutput}
+                    </pre>
+                  </div>
+                  {testCases.sample && (
+                    <div className="mt-2">
+                      <span className="px-2 py-1 bg-blue-900/30 text-blue-400 text-xs rounded-full">
+                        Sample Test Case
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
