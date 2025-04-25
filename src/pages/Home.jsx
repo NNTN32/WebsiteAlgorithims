@@ -1,9 +1,103 @@
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+
+const LoadingScreen = () => {
+  return (
+    <div className="fixed inset-0 bg-black z-50 flex items-center justify-center">
+      {/* Tech background grid */}
+      <div className="absolute inset-0 opacity-20">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `linear-gradient(to right, #1a1a1a 1px, transparent 1px),
+            linear-gradient(to bottom, #1a1a1a 1px, transparent 1px)`,
+          backgroundSize: '30px 30px'
+        }}></div>
+      </div>
+
+      {/* Corner animations */}
+      {['top-left', 'top-right', 'bottom-left', 'bottom-right'].map((corner) => (
+        <motion.div
+          key={corner}
+          className="absolute w-32 h-32 border-2 border-blue-500"
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1, repeat: Infinity, repeatType: "reverse" }}
+          style={{
+            top: corner.includes('top') ? '0' : 'auto',
+            left: corner.includes('left') ? '0' : 'auto',
+            right: corner.includes('right') ? '0' : 'auto',
+            bottom: corner.includes('bottom') ? '0' : 'auto',
+            transform: `rotate(${corner.includes('right') ? '90' : '0'}deg)`
+          }}
+        />
+      ))}
+
+      {/* Central loading bar */}
+      <div className="relative w-64 h-2 bg-gray-800 rounded-full overflow-hidden">
+        <motion.div
+          className="absolute h-full bg-blue-500"
+          initial={{ width: "0%" }}
+          animate={{ width: "100%" }}
+          transition={{ duration: 2, ease: "easeInOut" }}
+        />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <motion.div
+            className="text-blue-500 text-sm font-mono"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            Loading...
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Binary rain effect */}
+      <div className="absolute inset-0 overflow-hidden opacity-20">
+        {[...Array(20)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute text-green-500 font-mono text-sm"
+            initial={{ y: -100, x: `${Math.random() * 100}%` }}
+            animate={{ y: '100vh' }}
+            transition={{
+              duration: Math.random() * 2 + 1,
+              repeat: Infinity,
+              ease: "linear"
+            }}
+          >
+            {Math.random().toString(2).substring(2, 10)}
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 const Home = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Hide everything when loading
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
+
+  // Show content with fade-in animation when loading is complete
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.8 }}
+      className="min-h-screen bg-gradient-to-b from-gray-50 to-white"
+    >
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20 transform -skew-y-6"></div>
@@ -107,7 +201,7 @@ const Home = () => {
           </motion.div>
         </div>
       </section>
-    </div>
+    </motion.div>
   );
 };
 
