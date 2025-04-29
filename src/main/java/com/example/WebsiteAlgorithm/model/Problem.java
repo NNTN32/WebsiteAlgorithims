@@ -22,6 +22,9 @@ public class Problem {
     private String topicTags; // eg: "DP, Array, Greedy"
     private LocalDateTime createdAt;
 
+    @OneToMany(mappedBy = "problem")
+    private List<CodeTemplate> templates;
+
     public void setTitle(String title) { this.title = title; }
     public void setDescription(String description) { this.description = description; }
     public void setDifficulty(String difficulty) { this.difficulty = difficulty; }

@@ -4,6 +4,7 @@ import com.example.WebsiteAlgorithm.config.JwtAuthenticationFilter;
 import com.example.WebsiteAlgorithm.config.JwtTokenProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -40,6 +41,10 @@ public class SecurityConfig {
                                 "/api/problem",
                                 "/api/problem/{problemId}",
                                 "/api/test/{problemId}",
+                                "/api/code-template/addLanguage/{problemId}",
+                                "/api/code-template/languages/{problemId}",
+                                "/api/code-template/generateTemplate/{problemId}/{language}",
+                                "/api/code-template/{problemId}",
                                 "/ws/**",               //Cho phép WebSocket connect
                                 "/topic/**", "/queue/**", "/app/**"  // Nếu cần, cho các topic
                         ).permitAll()
