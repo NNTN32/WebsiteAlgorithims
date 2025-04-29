@@ -20,8 +20,7 @@ public class CodeTemplate {
 
     private String language; // Java, Python, etc.
 
-    @Lob
-    @Column(name = "template", columnDefinition = "TEXT")
+    @Column(length = 10000)
     private String template;
 
     private LocalDateTime createdAt;

@@ -49,30 +49,27 @@ public class TemplateService {
                     CodeTemplate newTemplate = new CodeTemplate();
                     newTemplate.setProblem(problem);
                     newTemplate.setLanguage(language);
-                    newTemplate.setTemplate(""); // ban đầu trống
+                    newTemplate.setTemplate(""); // Ban đầu trống
                     newTemplate.setCreatedAt(LocalDateTime.now());
                     return templateRepo.save(newTemplate);
                 });
 
         if (!force && template.getTemplate() != null && !template.getTemplate().isBlank()) {
-            return template; // ❄️ cache hit
+            return template; // Cache hit
         }
 
-        String prompt = template.getProblem().getDescription();
-        String generatedTemplate = ollamaService.generateCodeTemplate(language, prompt);
-
-        // Log output to ensure generated template is valid
-        System.out.println("Generated template: " + generatedTemplate);
+        String problemDescription = template.getProblem().getDescription();
+        String generatedTemplate = ollamaService.generateCodeTemplate(language, problemDescription);
 
         if (generatedTemplate == null || generatedTemplate.isBlank()) {
             throw new RuntimeException("Generated template is empty");
         }
 
-        // Log before saving to DB
-        System.out.println("Saving template: " + generatedTemplate);
         template.setTemplate(generatedTemplate);
         template.setUpdatedAt(LocalDateTime.now());
 
+        System.out.println("Saving template to DB:");
+        System.out.println(template.getTemplate());
         return templateRepo.save(template);
     }
 

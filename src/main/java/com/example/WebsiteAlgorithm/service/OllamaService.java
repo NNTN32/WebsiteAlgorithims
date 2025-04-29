@@ -18,11 +18,8 @@ public class OllamaService {
 
     public String generateCodeTemplate(String language, String problemTitle) throws IOException {
         String lang = language.trim().toLowerCase();
-
-        // Phân biệt có cần class không bằng từ khóa ngôn ngữ
         boolean needsClass = lang.contains("java") || lang.contains("c++") || lang.contains("c#") || lang.contains("kotlin");
 
-        // Prompt tuỳ vào kiểu ngôn ngữ
         String prompt = needsClass
                 ? String.format("You are an expert in %s. Generate a minimal class template with a main method for this problem:\n\"%s\"\nReturn only code, no explanation, in Markdown code block.", language, problemTitle)
                 : String.format("You are an expert in %s. Generate a minimal main function template for this problem:\n\"%s\"\nReturn only code, no explanation, in Markdown code block.", language, problemTitle);
@@ -61,8 +58,6 @@ public class OllamaService {
             }
 
             String rawCode = finalResponse.toString().trim();
-            System.out.println("Raw code from API: " + rawCode);  // Log to ensure correctness
-            // Clean markdown if necessary
             return rawCode.replaceAll("(?s)```[a-z]*\\s*", "").replaceAll("```", "").trim();
         }
     }
