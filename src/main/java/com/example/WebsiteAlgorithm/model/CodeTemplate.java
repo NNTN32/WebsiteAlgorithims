@@ -8,8 +8,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "codeTemplate")
-@Data
+@Table(name = "code_template")
 public class CodeTemplate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
