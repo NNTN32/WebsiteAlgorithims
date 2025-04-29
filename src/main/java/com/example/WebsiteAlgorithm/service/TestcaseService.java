@@ -57,26 +57,6 @@ public class TestcaseService {
         return saved;
     }
 
-//    public List<TestReponse> getTestCasesByProblemId(Long problemId) {
-//        List<TestCase> testCases = testCaseRepo.findAllByProblemId(problemId);
-//        if (testCases.isEmpty()) {
-//            throw new IllegalArgumentException("Không có Testcase cho problem này");
-//        }
-//
-//        return testCases.stream().map(tc -> {
-//            TestReponse dto = new TestReponse();
-//            dto.setId(tc.getId());
-//            dto.setInput(tc.getInput());  // Getter đã cắt tối đa 100 ký tự rồi
-//            dto.setExpectedOutput(tc.getExpectedOutput());  // Cũng đã xử lý
-//            dto.setSample(tc.isSample());
-//
-//            // Nếu muốn đính kèm thông tin Problem thì convert Problem → TestRequest
-//            // hoặc để null nếu không cần
-//            dto.setProblem(null);  // Hoặc convert nếu cần
-//            return dto;
-//        }).collect(Collectors.toList());
-//    }
-
     @Transactional
     public ResponseEntity<Map<String, Object>> getTestCasesByProblemId(Long problemId){
         Optional<TestCase> testCaseOptional = testCaseRepo.findByProblemId(problemId);

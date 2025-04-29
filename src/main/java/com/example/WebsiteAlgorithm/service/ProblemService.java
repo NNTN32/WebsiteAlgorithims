@@ -53,7 +53,7 @@ public class ProblemService {
     @Transactional
     public ResponseEntity<Map<String, Object>> getProblemDetailsById(Long problemId) {
         // Truy vấn từ DB
-        System.out.println("📦 Lấy dữ liệu từ DB");
+        System.out.println("Lấy dữ liệu từ DB");
         Optional<Problem> problemOptional = problemRepository.findById(problemId);
         if (problemOptional.isEmpty()) {
             throw new RuntimeException("Problem not found with id: " + problemId);
