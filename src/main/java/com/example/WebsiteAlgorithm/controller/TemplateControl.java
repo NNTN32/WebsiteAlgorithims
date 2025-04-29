@@ -94,9 +94,12 @@ public class TemplateControl {
         }
     }
 
-    @GetMapping("/{problemId}")
-    public ResponseEntity<List<CodeTemplate>> getTemplates(@PathVariable Long problemId) {
-        return ResponseEntity.ok(templateService.getTemplatesByProblem(problemId));
+    @GetMapping("/template/{problemId}/{language}")
+    public ResponseEntity<?> getTemplateByProblemAndLanguage(
+            @PathVariable Long problemId,
+            @PathVariable String language
+    ) {
+        return templateService.getTemplateByProblemAndLanguage(problemId, language);
     }
 
 }

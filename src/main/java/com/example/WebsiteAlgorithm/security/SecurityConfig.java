@@ -44,7 +44,7 @@ public class SecurityConfig {
                                 "/api/code-template/addLanguage/{problemId}",
                                 "/api/code-template/languages/{problemId}",
                                 "/api/code-template/generateTemplate/{problemId}/{language}",
-                                "/api/code-template/{problemId}",
+                                "/api/code-template/template/{problemId}/{language}",
                                 "/ws/**",               //Cho phép WebSocket connect
                                 "/topic/**", "/queue/**", "/app/**"  // Nếu cần, cho các topic
                         ).permitAll()
