@@ -121,27 +121,32 @@ const Task = () => {
       const token = localStorage.getItem('token');
       if (!token) return;
 
-      const response = await axios.get(
-        `http://localhost:8081/api/code-template/template/${problemId}/${language}`,
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`
+      try {
+        // First try to get existing template
+        const response = await axios.get(
+          `http://localhost:8081/api/code-template/template/${problemId}/${language}`,
+          {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
           }
-        }
-      );
+        );
 
-      if (response.data && response.data.template) {
-        setCode(response.data.template.content || '');
-        setError(null);
+        if (response.data && response.data.template && response.data.template.trim() !== '') {
+          setCode(response.data.template);
+          setError(null);
+        } else {
+          // If template is empty or doesn't exist, generate new one
+          await generateTemplate(language);
+        }
+      } catch (err) {
+        // If template not found (404) or any other error, try generating
+        console.log('Template not found, generating new one...');
+        await generateTemplate(language);
       }
     } catch (err) {
-      console.error('Error fetching template:', err);
-      if (err.response?.status === 404) {
-        // Template not found, try generating
-        await generateTemplate(language);
-      } else {
-        setError('Failed to load template. Please try again.');
-      }
+      console.error('Error in template handling:', err);
+      setError('Failed to load or generate template. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -149,34 +154,39 @@ const Task = () => {
 
   const generateTemplate = async (language) => {
     try {
-      setIsLoading(true);
       const token = localStorage.getItem('token');
       if (!token) return;
 
+      console.log(`Generating template for ${language}...`);
       const response = await axios.put(
         `http://localhost:8081/api/code-template/generateTemplate/${problemId}/${language}`,
-        null,
+        {
+          content: '',
+          language: language,
+          problemId: problemId
+        },
         {
           headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
           },
           params: {
-            force: true
+            force: true // Force regenerate template
           }
         }
       );
 
       if (response.data && response.data.template) {
-        setCode(response.data.template.content || '');
+        console.log('Template generated successfully');
+        setCode(response.data.template);
         setError(null);
       } else {
-        setError('No template received from server');
+        throw new Error('No template content in response');
       }
     } catch (err) {
       console.error('Error generating template:', err);
-      setError('Failed to generate template. Please try again.');
-    } finally {
-      setIsLoading(false);
+      setError(`Failed to generate ${language} template. Please try again.`);
+      throw err; // Re-throw to be handled by fetchTemplate
     }
   };
 
