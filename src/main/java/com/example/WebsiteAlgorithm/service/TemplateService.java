@@ -73,6 +73,8 @@ public class TemplateService {
         return templateRepo.save(template);
     }
 
+
+    @Transactional
     public ResponseEntity<?> getTemplateByProblemAndLanguage(Long problemId, String language) {
         Optional<CodeTemplate> optionalTemplate = templateRepo.findByProblemIdAndLanguage(problemId, language);
 
@@ -81,6 +83,7 @@ public class TemplateService {
             return ResponseEntity.ok(Map.of(
                     "message", "Template fetched successfully",
                     "template", Map.of(
+                            "id", template.getId(),
                             "language", template.getLanguage(),
                             "content", template.getTemplate(),
                             "createdAt", template.getCreatedAt(),
