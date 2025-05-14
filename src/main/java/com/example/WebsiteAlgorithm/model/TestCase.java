@@ -18,11 +18,11 @@ public class TestCase {
     private Problem problem;
 
     @Lob
-    @Column(columnDefinition = "TEXT")
+    @Column(length = 10000)
     private String input;
 
     @Lob
-    @Column(columnDefinition = "TEXT")
+    @Column(length = 10000)
     private String expectedOutput;
 
     private boolean isSample;
