@@ -71,7 +71,7 @@ public class AuthControl {
 
         if (result == null || result.isEmpty()) {
             return ResponseEntity.status(HttpStatus.ACCEPTED)
-                    .body(Map.of("status", "PENDING", "message", "Đang xử lý..."));
+                    .body(Map.of("status", "PENDING", "message", "Processing..."));
         }
 
         return ResponseEntity.ok(result);
