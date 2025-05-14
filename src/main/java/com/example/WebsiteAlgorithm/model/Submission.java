@@ -5,9 +5,9 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+@Data
 @Entity
 @Table(name = "submission")
-@Data
 public class Submission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

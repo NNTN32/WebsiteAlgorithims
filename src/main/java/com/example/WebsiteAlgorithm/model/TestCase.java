@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
+@Data
 @Entity
 @Table(name = "testcase")
-@Data
 public class TestCase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
