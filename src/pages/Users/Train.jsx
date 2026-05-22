@@ -32,7 +32,7 @@ const Train = () => {
     const fetchProblems = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://localhost:8081/api/problem');
+        const response = await axios.get('http://localhost:8082/api/problem');
         // Xử lý dữ liệu và tạo danh sách categories từ topicTags
         const processedData = response.data.map(problem => ({
           ...problem,

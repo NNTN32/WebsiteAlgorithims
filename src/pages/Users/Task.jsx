@@ -40,7 +40,7 @@ const Task = () => {
         }
 
         setLoading(true);
-        const response = await axios.get(`http://localhost:8081/api/problem/${problemId}`, {
+        const response = await axios.get(`http://localhost:8082/api/problem/${problemId}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -74,7 +74,7 @@ const Task = () => {
         const token = localStorage.getItem('token');
         if (!token) return;
 
-        const response = await axios.get(`http://localhost:8081/api/test/${problemId}`, {
+        const response = await axios.get(`http://localhost:8082/api/test/${problemId}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -98,7 +98,7 @@ const Task = () => {
         const token = localStorage.getItem('token');
         if (!token) return;
 
-        const response = await axios.get(`http://localhost:8081/api/code-template/languages/${problemId}`, {
+        const response = await axios.get(`http://localhost:8082/api/code-template/languages/${problemId}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -124,7 +124,7 @@ const Task = () => {
       try {
         // First try to get existing template
         const response = await axios.get(
-          `http://localhost:8081/api/code-template/template/${problemId}/${language}`,
+          `http://localhost:8082/api/code-template/template/${problemId}/${language}`,
           {
             headers: {
               'Authorization': `Bearer ${token}`
@@ -159,7 +159,7 @@ const Task = () => {
 
       console.log(`Generating template for ${language}...`);
       const response = await axios.put(
-        `http://localhost:8081/api/code-template/generateTemplate/${problemId}/${language}`,
+        `http://localhost:8082/api/code-template/generateTemplate/${problemId}/${language}`,
         {
           content: '',
           language: language,

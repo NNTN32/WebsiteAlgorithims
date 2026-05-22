@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-    baseURL: 'http://localhost:8081/api/auth'
+    baseURL: 'http://localhost:8082/api/auth'
 });
 
 // Request interceptor
